@@ -1,0 +1,38 @@
+/*
+  @author Evgeny Kuleshov (egroont@gmail.com)
+  @created 2016.03.22
+
+  This source code follows Formatting section of Google C++ Style Guide
+  http://google-styleguide.googlecode.com/svn/trunk/cppguide.xml#Formatting
+*/
+
+html,
+body {
+  height: 100%;
+  width: 100%;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+#page {
+  height: 100%;
+}
+
+
+.maze {
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+}
+
+.maze .elem {
+  width: 10%;
+  height: 100%;
+  position: relative;
+  float: left;
+  background-image: url('../img/bg2.jpg');
+  background-size: auto 100%;
+  transition: all 0.1s;
+}

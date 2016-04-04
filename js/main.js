@@ -44,6 +44,12 @@ g.Main = function(root) {
   this.targets_ = [];
 
   /**
+   * @type {Array.<number>}
+   * @private
+   */
+  this.blocked_ = [];
+
+  /**
    * @type {boolean}
    * @private
    */
@@ -100,35 +106,35 @@ g.Main.prototype.attachEvents_ = function() {
     // var elem = e.target;
 
     var elems = that.elems_;
-    var epicenter;
-
-    for (var i = elems.length - 1; i >= 0; i--) {
-      if (elems[i] == e.target)
-        epicenter = i;
-    }
-
-    console.log(epicenter);
+    // var epicenter = elems.indexOf(e.target);
+    var epicenter = Array.prototype.indexOf.call(elems, e.target);
 
     var k;
-    var coeff = 1.5;
+    var coeff = 10;
+    var shiftCoeff = 2;
+    var blocked = that.blocked_;
 
     for (var i = 0; i < elems.length; i++) {
       var elem = elems[i];
-      if (i < epicenter){
-        k = epicenter - i;
-      }
-      if (i > epicenter){
-        k = i - epicenter;
-      }
-      if (i == epicenter){
-        k = 1 / coeff;
-      }
-        var value = parseInt(elem.style.backgroundPosition, 10);
+      if (!blocked.includes(i)){
+        if (i < epicenter){
+          k = epicenter - i;
+          k = shiftCoeff * k / coeff;
+        }
+        if (i > epicenter){
+          k = i - epicenter;
+          k = shiftCoeff * k / coeff;
+        }
+        if (i == epicenter){
+          k = 1 / coeff;
+        }
+          var value = parseInt(elem.style.backgroundPosition, 10);
 
-        elem.style.backgroundPosition = value + ((delta < 0) ? 1 : -1) * coeff * k + 'px 0';
+          elem.style.backgroundPosition = value + ((delta < 0) ? 1 : -1) * coeff * k + 'px 0';
 
-        that.checkFinish_(elem);
-        e.preventDefault();
+          that.checkFinish_(elem);
+          e.preventDefault();
+      }
     }
 
     // for (var i = 0; i < that.elems_.length; i++) {
@@ -154,6 +160,25 @@ g.Main.prototype.attachEvents_ = function() {
     // that.checkFinish_(elem);
     // e.preventDefault();
   });
+
+
+  this.elems_.bind("click", function(e) {
+    if (that.isFinished_) {
+      return;
+    }
+
+    var blocked = that.blocked_;
+    var index = Array.prototype.indexOf.call(that.elems_, e.target);
+    var indexInBlockedArray = Array.prototype.indexOf.call(blocked, index);
+    
+    if (indexInBlockedArray > -1){
+      that.blocked_.splice(indexInBlockedArray, 1);
+    } else{
+      that.blocked_.push(index);
+    }
+
+  });
+
 };
 
 
